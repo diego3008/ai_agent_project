@@ -1,0 +1,13 @@
+requests
+langchain_openai
+langchain
+langchain-community
+langchain-core
+langchain-groq
+langchain-tavily
+langgraph
+openai
+python-dotenv
+numpy
+pandas
+tavily-python
