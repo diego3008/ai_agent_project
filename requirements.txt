@@ -11,3 +11,6 @@ python-dotenv
 numpy
 pandas
 tavily-python
+fastapi
+uvicorn
+grandalf
