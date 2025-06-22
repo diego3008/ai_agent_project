@@ -12,12 +12,15 @@ from langgraph.prebuilt import tools_condition, ToolNode
 load_dotenv()
 
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
-
+OPENWEATHER_API = os.environ["OPENWEATHER_API"]
 
 message = """""
-You are a helpful assistant that has a sum tool to solve
-a sum operation when you are given two integers, you can use this tool
-only when you are given the pair of integers.
+You are a helpful assistant with a set of different tools.
+Depending on the users request you will need to use an specific tool and return
+an answer.
+Avoid using formats with numbers and using phrases like:
+'The answer is', 'The result is'.
+
 """
 sys_message = SystemMessage(content=message)
 
@@ -32,11 +35,31 @@ def sum(num1: int, num2: int) -> int:
     """
     return num1 + num2
 
+@tool
+def get_city_weather(city: str) -> str:
+    """Returns the current weather ona a specific city
+    Args:
+        city: string
+    """
+    try:
+        api_key = OPENWEATHER_API
+        if(api_key is None):
+            return "There was an error getting weather API key"
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+        resp = requests.get(url)
+        data = resp.json()
+        temperature = data["main"]["temp"]
+        description = data["weather"][0]["description"]
+        return f"The weather in {city} is {temperature} and {description}"
+    except Exception as ex:
+        print(ex)
+
 
 
 
 tools = [
-    sum
+    sum,
+    get_city_weather
 ]
 
 
