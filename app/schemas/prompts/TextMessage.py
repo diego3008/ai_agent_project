@@ -1,0 +1,2 @@
+class TextMessage:
+    question: str

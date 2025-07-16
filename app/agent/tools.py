@@ -1,4 +1,6 @@
 
+import tempfile
+from fastapi import File, HTTPException, UploadFile
 import pandas as pd
 import requests
 import os
@@ -8,22 +10,25 @@ from langchain_groq import ChatGroq
 from langchain_core.tools import tool
 from langgraph.graph import StateGraph, START, END, MessagesState
 from langgraph.prebuilt import tools_condition, ToolNode
+from smolagents import PythonInterpreterTool
+from openai import OpenAI
+import io
 
 load_dotenv()
 
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 OPENWEATHER_API = os.environ["OPENWEATHER_API"]
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
 message = """""
 You are a helpful assistant with a set of different tools.
 Depending on the users request you will need to use an specific tool and return
 an answer.
-Avoid using formats with numbers and using phrases like:
+If the user sends a python code you will use the code_interpreter tool
+Avoid using odd formats and using phrases like:
 'The answer is', 'The result is'.
-
 """
 sys_message = SystemMessage(content=message)
-
 
 
 @tool
@@ -35,6 +40,7 @@ def sum(num1: int, num2: int) -> int:
     """
     return num1 + num2
 
+
 @tool
 def get_city_weather(city: str) -> str:
     """Returns the current weather ona a specific city
@@ -43,7 +49,7 @@ def get_city_weather(city: str) -> str:
     """
     try:
         api_key = OPENWEATHER_API
-        if(api_key is None):
+        if (api_key is None):
             return "There was an error getting weather API key"
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
         resp = requests.get(url)
@@ -52,14 +58,44 @@ def get_city_weather(city: str) -> str:
         description = data["weather"][0]["description"]
         return f"The weather in {city} is {temperature} and {description}"
     except Exception as ex:
-        print(ex)
+        return f"There was an error getting the weather from {city}: {ex}"
 
 
+@tool
+def code_interpreter(code: str) -> str:
+    """Returns the output of the code given by the user
+    Args:
+        code: The code attached by the user
+    """
+    try:
+        interpreter = PythonInterpreterTool()
+        code = code.encode()
+        result = interpreter(code)
+        return result.get("output", "No output returned.")
+    except Exception as e:
+        return f"Execution failed: {e}"
+
+
+@tool
+def ask_gpt(question: str) -> str:
+    """This tool will make a query to the OpenAi API and retrieve the answer as a string.
+    Args:
+        question: string
+    """
+    try:
+        if OPENAI_API_KEY is not None:
+            client = OpenAI(OPENAI_API_KEY)
+
+        else:
+            return "Error getting Open AI api key"
+    except HTTPException as ex:
+        return ex
 
 
 tools = [
     sum,
-    get_city_weather
+    get_city_weather,
+    code_interpreter
 ]
 
 
