@@ -1,2 +1,4 @@
 .env
 huggingface_agent/
+__pycache__/
+.vscode/
