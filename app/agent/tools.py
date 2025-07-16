@@ -61,19 +61,19 @@ def get_city_weather(city: str) -> str:
         return f"There was an error getting the weather from {city}: {ex}"
 
 @tool
-def ask_gpt(question: str) -> str:
-    """This tool will make a query to the OpenAi API and retrieve the answer as a string.
-    Args:
-        question: string
+def data_visualization_tool(file: UploadFile, chart_type: str, prompt: str) -> str:
     """
-    try:
-        if OPENAI_API_KEY is not None:
-            client = OpenAI(OPENAI_API_KEY)
-
-        else:
-            return "Error getting Open AI api key"
-    except HTTPException as ex:
-        return ex
+    Generates a data visualization based on the uploaded file and user prompt.
+    Args:
+        file: UploadFile - The data file (CSV, JSON, etc.) to visualize.
+        chart_type: str - The type of chart to generate (e.g., 'bar', 'line', 'pie').
+        prompt: str - Natural language description of what to visualize (e.g., 'Show sales by month').
+    Returns:
+        str: A base64-encoded image of the chart, or an error message.
+    """
+    # TODO: Implement the tool
+    
+    return "Not implemented yet."
 
 
 tools = [

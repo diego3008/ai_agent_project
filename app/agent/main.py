@@ -1,9 +1,9 @@
 
 from langchain_core.messages import HumanMessage
 from langchain_groq import ChatGroq
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from app.schemas.question import Question
-from .tools import build_graph
+from .tools import build_graph, data_visualization_tool
 
 # --- Basic Agent Definition ---
 # ----- THIS IS WERE YOU CAN BUILD WHAT YOU WANT ------
@@ -66,3 +66,15 @@ class AgentRouter:
                 print(f"There was an error retrieving the question: #{ex}")
                 return ex
         
+        @self.router.post("/visualize")
+        async def visualize(
+            file: UploadFile = File(...),
+            chart_type: str = Form(...),
+            prompt: str = Form(...)
+        ) -> str:
+            try:
+                result = data_visualization_tool(file, chart_type, prompt)
+                return result
+            except Exception as ex:
+                print(f"Visualization error: {ex}")
+                raise HTTPException(status_code=500, detail=str(ex))
