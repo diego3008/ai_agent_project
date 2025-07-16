@@ -60,22 +60,6 @@ def get_city_weather(city: str) -> str:
     except Exception as ex:
         return f"There was an error getting the weather from {city}: {ex}"
 
-
-@tool
-def code_interpreter(code: str) -> str:
-    """Returns the output of the code given by the user
-    Args:
-        code: The code attached by the user
-    """
-    try:
-        interpreter = PythonInterpreterTool()
-        code = code.encode()
-        result = interpreter(code)
-        return result.get("output", "No output returned.")
-    except Exception as e:
-        return f"Execution failed: {e}"
-
-
 @tool
 def ask_gpt(question: str) -> str:
     """This tool will make a query to the OpenAi API and retrieve the answer as a string.
@@ -95,7 +79,6 @@ def ask_gpt(question: str) -> str:
 tools = [
     sum,
     get_city_weather,
-    code_interpreter
 ]
 
 
