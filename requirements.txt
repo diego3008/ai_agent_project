@@ -16,3 +16,4 @@ uvicorn
 grandalf
 smolagents
 aiofiles
+pytest>=7.0.0
