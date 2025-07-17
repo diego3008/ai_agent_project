@@ -65,16 +65,3 @@ class AgentRouter:
             except HTTPException as ex:
                 print(f"There was an error retrieving the question: #{ex}")
                 return ex
-        
-        @self.router.post("/visualize")
-        async def visualize(
-            file: UploadFile = File(...),
-            chart_type: str = Form(...),
-            prompt: str = Form(...)
-        ) -> str:
-            try:
-                result = data_visualization_tool(file, chart_type, prompt)
-                return result
-            except Exception as ex:
-                print(f"Visualization error: {ex}")
-                raise HTTPException(status_code=500, detail=str(ex))

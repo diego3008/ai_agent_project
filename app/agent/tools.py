@@ -86,7 +86,7 @@ def build_graph(provider: str = "groq"):
     """"Build the graph"""
 
     if provider == 'groq':
-        llm = ChatGroq(model="qwen-qwq-32b",
+        llm = ChatGroq(model="qwen/qwen3-32b",
                        api_key=GROQ_API_KEY, temperature=0.1)
 
     llm_with_tools = llm.bind_tools(tools)
