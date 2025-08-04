@@ -75,6 +75,20 @@ def data_visualization_tool(file: UploadFile, chart_type: str, prompt: str) -> s
     
     return "Not implemented yet."
 
+@tool
+def sentiment_analysis_tool(text: str) -> str:
+    """
+    Analyzes the sentiment of the provided text.
+    Args:
+        text: The text to analyze.
+    Returns:
+        str: The sentiment analysis result.
+    """
+    # TODO: Implement the tool
+    # Own Model implementation
+    
+    return "Not implemented yet."
+
 
 tools = [
     sum,
