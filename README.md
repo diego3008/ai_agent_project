@@ -109,10 +109,34 @@ The frontend will be available at [http://localhost:3000](http://localhost:3000)
 ai_agent_course/
   ├── app/
   │   ├── agent/
+  │   │   ├── tools.py           # Define AI tools and functionalities
+  │   │   ├── models.py          # Models for the AI logic (e.g., LLM interfaces)
+  │   │   └── __init__.py        # Package initializer
+  │   │
   │   ├── api/
+  │   │   ├── v1/
+  │   │   │   ├── endpoints.py    # API endpoints for version 1
+  │   │   │   └── __init__.py     # Initializer for API v1
+  │   │   └── __init__.py         # API package initializer
+  │   │
   │   ├── schemas/
-  │   └── main.py
-  ├── requirements.txt
+  │   │   ├── tool_schema.py      # Pydantic models for tool-related data
+  │   │   └── __init__.py         # Schemas package initializer
+  │   │
+  │   ├── core/
+  │   │   ├── config.py           # Configuration settings
+  │   │   └── __init__.py         # Core package initializer
+  │   │
+  │   ├── main.py                 # Entry point of the FastAPI application
+  │   └── __init__.py             # App package initializer
+  │
+  ├── tests/
+  │   ├── test_agent.py           # Unit tests for agent functionality
+  │   └── test_api.py             # Tests for API endpoints
+  │
+  ├── requirements.txt            # List of Python dependencies
+  ├── README.md                   # Project documentation
+  ├── .env.example                # Example environment file
   └── ...
 ```
 

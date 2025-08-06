@@ -2,3 +2,5 @@
 huggingface_agent/
 __pycache__/
 .vscode/
+.pytest_cache/
+.vscode

@@ -13,6 +13,7 @@ from langgraph.prebuilt import tools_condition, ToolNode
 from smolagents import PythonInterpreterTool
 from openai import OpenAI
 import io
+from textblob import TextBlob
 
 load_dotenv()
 
@@ -61,19 +62,39 @@ def get_city_weather(city: str) -> str:
         return f"There was an error getting the weather from {city}: {ex}"
 
 @tool
-def ask_gpt(question: str) -> str:
-    """This tool will make a query to the OpenAi API and retrieve the answer as a string.
+def data_visualization_tool(file: UploadFile, chart_type: str, prompt: str) -> str:
+    """
+    Generates a data visualization based on the uploaded file and user prompt.
     Args:
-        question: string
+        file: UploadFile - The data file (CSV, JSON, etc.) to visualize.
+        chart_type: str - The type of chart to generate (e.g., 'bar', 'line', 'pie').
+        prompt: str - Natural language description of what to visualize (e.g., 'Show sales by month').
+    Returns:
+        str: A base64-encoded image of the chart, or an error message.
+    """
+    # TODO: Implement the tool
+    
+    return "Not implemented yet."
+
+@tool
+def sentiment_analysis_tool(text: str) -> str:
+    """
+    Analyzes the sentiment of the provided text.
+    Args:
+        text: The text to analyze.
+    Returns:
+        str: The sentiment analysis result.
     """
     try:
-        if OPENAI_API_KEY is not None:
-            client = OpenAI(OPENAI_API_KEY)
-
+        analysis = TextBlob(text)
+        if analysis.sentiment.polarity > 0:
+            return 'Positive'
+        elif analysis.sentiment.polarity < 0:
+            return 'Negative'
         else:
-            return "Error getting Open AI api key"
-    except HTTPException as ex:
-        return ex
+            return 'Neutral'
+    except Exception as e:
+        return f"Error in sentiment analysis: {e}"
 
 
 tools = [
@@ -86,7 +107,7 @@ def build_graph(provider: str = "groq"):
     """"Build the graph"""
 
     if provider == 'groq':
-        llm = ChatGroq(model="qwen-qwq-32b",
+        llm = ChatGroq(model="qwen/qwen3-32b",
                        api_key=GROQ_API_KEY, temperature=0.1)
 
     llm_with_tools = llm.bind_tools(tools)

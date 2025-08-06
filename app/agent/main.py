@@ -1,9 +1,9 @@
 
 from langchain_core.messages import HumanMessage
 from langchain_groq import ChatGroq
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from app.schemas.question import Question
-from .tools import build_graph
+from .tools import build_graph, data_visualization_tool
 
 # --- Basic Agent Definition ---
 # ----- THIS IS WERE YOU CAN BUILD WHAT YOU WANT ------
@@ -65,4 +65,3 @@ class AgentRouter:
             except HTTPException as ex:
                 print(f"There was an error retrieving the question: #{ex}")
                 return ex
-        
