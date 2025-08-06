@@ -13,6 +13,7 @@ from langgraph.prebuilt import tools_condition, ToolNode
 from smolagents import PythonInterpreterTool
 from openai import OpenAI
 import io
+from textblob import TextBlob
 
 load_dotenv()
 
@@ -84,10 +85,16 @@ def sentiment_analysis_tool(text: str) -> str:
     Returns:
         str: The sentiment analysis result.
     """
-    # TODO: Implement the tool
-    # Own Model implementation
-    
-    return "Not implemented yet."
+    try:
+        analysis = TextBlob(text)
+        if analysis.sentiment.polarity > 0:
+            return 'Positive'
+        elif analysis.sentiment.polarity < 0:
+            return 'Negative'
+        else:
+            return 'Neutral'
+    except Exception as e:
+        return f"Error in sentiment analysis: {e}"
 
 
 tools = [
