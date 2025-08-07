@@ -18,3 +18,4 @@ aiofiles
 pytest>=7.0.0
 torch
 torchvision
+textblob
