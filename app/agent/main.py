@@ -1,9 +1,10 @@
 
 from langchain_core.messages import HumanMessage
 from langchain_groq import ChatGroq
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
 from app.schemas.question import Question
 from .tools import build_graph, data_visualization_tool
+from typing import Optional
 
 # --- Basic Agent Definition ---
 # ----- THIS IS WERE YOU CAN BUILD WHAT YOU WANT ------
@@ -65,3 +66,35 @@ class AgentRouter:
             except HTTPException as ex:
                 print(f"There was an error retrieving the question: #{ex}")
                 return ex
+                
+        @self.router.post("/question-form")
+        async def makeQuestionFromForm(
+            question_text: str = Form(...),
+            additional_context: Optional[str] = Form(None),
+            file: Optional[UploadFile] = File(None)
+        ) -> str:
+            """Handle FormData from Next.js frontend with optional file upload"""
+            try:
+                # Combine question text with additional context if provided
+                full_question = question_text
+                if additional_context:
+                    full_question = f"{question_text}\n\nAdditional Context: {additional_context}"
+                
+                # Process uploaded file if present
+                if file and file.filename:
+                    # Read file content
+                    file_content = await file.read()
+                    # Add file info to the question
+                    full_question += f"\n\nFile uploaded: {file.filename} (Content type: {file.content_type})"
+                    # You can process the file content here if needed
+                    # For example, if it's a text file, you could include its content:
+                    if file.content_type and 'text' in file.content_type:
+                        full_question += f"\nFile content: {file_content.decode('utf-8')[:500]}..."  # First 500 chars
+                
+                agent = BasicAgent()
+                answer = agent(question=full_question)
+                return answer
+            except Exception as ex:
+                error_msg = f"Error processing form data: {str(ex)}"
+                print(error_msg)
+                raise HTTPException(status_code=500, detail=error_msg)
