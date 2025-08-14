@@ -25,9 +25,7 @@ message = """""
 You are a helpful assistant with a set of different tools.
 Depending on the users request you will need to use an specific tool and return
 an answer.
-If the user sends a python code you will use the code_interpreter tool
-Avoid using odd formats and using phrases like:
-'The answer is', 'The result is'.
+Analyze the tools available and use them if applicable and return just the final answers to the user and avoid adding extra context or explanations, if the tool returns a string just send it to the user.
 """
 sys_message = SystemMessage(content=message)
 
@@ -70,7 +68,7 @@ def data_visualization_tool(file: UploadFile, chart_type: str, prompt: str) -> s
         chart_type: str - The type of chart to generate (e.g., 'bar', 'line', 'pie').
         prompt: str - Natural language description of what to visualize (e.g., 'Show sales by month').
     Returns:
-        str: A base64-encoded image of the chart, or an error message.
+        str: A base64-encoded image of the chart, or an error  message.
     """
     # TODO: Implement the tool
     
@@ -100,6 +98,7 @@ def sentiment_analysis_tool(text: str) -> str:
 tools = [
     sum,
     get_city_weather,
+    sentiment_analysis_tool
 ]
 
 
